@@ -1,0 +1,32 @@
+TODO: this is plugin is very rough an limited. should bring in line with other phonegap childbrowser plugins.
+
+An example:
+
+function getFacebookToken(sourceScreenCode)
+{
+	//we will be leaving our current page and loose all local js vars when we come back. Cache anything the user has worked on.
+	//cacheVars();
+	
+	try
+	{
+		//live
+		var appID = "123456789";
+		var redirect = "http://www.facebook.com/connect/login_success.html";
+
+		var path = 'https://www.facebook.com/dialog/oauth?display=wap&scope=publish_stream,offline_access,email&';
+		var queryParams = ['client_id=' + appID, 'redirect_uri=' + redirect + "?n=" + sourceScreenCode, 'response_type=token'];
+		var query = queryParams.join('&');
+		var url = path + query;
+		motek.childbrowser.open(url, urlCallback);
+	}
+	catch(e)
+	{
+		alert(e + " - " + debug(e));
+	}
+}
+
+function urlCallback(newUrl)
+{
+	console.log("urlCallback: " + newUrl);
+	//extract token from url
+}
