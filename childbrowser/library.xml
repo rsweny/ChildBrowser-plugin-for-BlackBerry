@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+<extension>
+<entryClass>com.motek.blackberry.webworks.extensions.ChildBrowserExtension</entryClass>
+</extension>
+<features>
+<feature id="motek" version="1.0.0" ></feature>
+</features>
+</library>
