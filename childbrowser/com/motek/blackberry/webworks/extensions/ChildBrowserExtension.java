@@ -27,8 +27,6 @@ public class ChildBrowserExtension implements WidgetExtension {
 	{
 		if (feature == "motek") {
 			scriptEngine.addExtension("motek.childbrowser", new ChildBrowserNamespace());
-			//EventLogger.register(ChildBrowserFunction.GUUID_STRING, "childbrowser",EventLogger.VIEWER_STRING);
-			//EventLogger.logEvent(ChildBrowserFunction.GUUID_STRING,"added childbrowser extension".toString().getBytes());
 		}
 	}
 

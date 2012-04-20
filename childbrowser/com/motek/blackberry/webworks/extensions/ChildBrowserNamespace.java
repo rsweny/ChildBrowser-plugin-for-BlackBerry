@@ -8,6 +8,8 @@ public class ChildBrowserNamespace extends Scriptable
 {
 	public static final String FIELD_CHILDBROWSER_OPEN = "open";
 	public static final String FIELD_CHILDBROWSER_CLOSE = "close";
+	public static final String FIELD_CHILDBROWSER_LOG = "log";
+	public static final String HTTP = "http";
 	public static final String FIELD_CHILDBROWSER_GETLOCATION = "getLocation";
 	private ChildBrowserFunction childBrowser;
 	
@@ -36,6 +38,14 @@ public class ChildBrowserNamespace extends Scriptable
 			{
 				return new Boolean(false);
 			}
+		}
+		else if(name.equals(FIELD_CHILDBROWSER_LOG)) 
+		{
+			return this.childBrowser;
+		}
+		else if(name.equals(HTTP)) 
+		{
+			return this.childBrowser;
 		}
 		else if(name.equals(FIELD_CHILDBROWSER_GETLOCATION))
 		{

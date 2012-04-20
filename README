@@ -1,7 +1,8 @@
-TODO: this is plugin is very rough an limited. should bring in line with other phonegap childbrowser plugins.
+//Example logging to EventLog and System.out
+console.log = function(msg) { motek.childbrowser.log(msg); };
+console.log("Hello!");
 
-An example:
-
+//Exmaple of opening a browser and listening for location changes:
 function getFacebookToken(sourceScreenCode)
 {
 	//we will be leaving our current page and loose all local js vars when we come back. Cache anything the user has worked on.
@@ -30,3 +31,9 @@ function urlCallback(newUrl)
 	console.log("urlCallback: " + newUrl);
 	//extract token from url
 }
+
+//Example FilePicker
+webworks.ui.filePicker.open(callBackFnFilePassedIn);
+
+There is also a a similiar child browser for Playbook here:
+https://github.com/aaronstasis/blackberry.polarmobile.childbrowser 
