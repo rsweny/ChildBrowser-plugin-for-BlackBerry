@@ -3,13 +3,8 @@ console.log = function(msg) { motek.childbrowser.log(msg); };
 console.log("Hello!");
 
 //Exmaple of opening a browser and listening for location changes:
-function getFacebookToken(sourceScreenCode)
-{
-	//we will be leaving our current page and loose all local js vars when we come back. Cache anything the user has worked on.
-	//cacheVars();
-	
-	try
-	{
+function getFacebookToken(sourceScreenCode) {
+	try {
 		//live
 		var appID = "123456789";
 		var redirect = "http://www.facebook.com/connect/login_success.html";
@@ -20,8 +15,7 @@ function getFacebookToken(sourceScreenCode)
 		var url = path + query;
 		motek.childbrowser.open(url, urlCallback);
 	}
-	catch(e)
-	{
+	catch(e) {
 		alert(e + " - " + debug(e));
 	}
 }
