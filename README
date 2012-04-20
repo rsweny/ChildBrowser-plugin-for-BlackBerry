@@ -16,7 +16,7 @@ function getFacebookToken(sourceScreenCode) {
 		motek.childbrowser.open(url, urlCallback);
 	}
 	catch(e) {
-		alert(e + " - " + debug(e));
+		alert(e);
 	}
 }
 
