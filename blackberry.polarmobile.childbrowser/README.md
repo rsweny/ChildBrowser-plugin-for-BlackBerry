@@ -38,6 +38,34 @@ In the `config.xml` file of your WebWorks app, include the following feature ele
 
     // automatically close the browser in 10 seconds from now
     setTimeout(function(){ browser.close(); }, 10000);
+	
+	//file upload example
+	var params = new Object();
+	params.foo = "bar";
+	
+	var options = new FileUploadOptions();
+	options.fileKey="file";
+	options.fileName = "g.jpg";
+	options.mimeType="image/jpeg";
+	options.chunkedMode = false;
+	options.params = params;
+	
+	blackberry.polarmobile.childbrowser.uploadFile(pathToFile,
+		myServerUrl,
+		function(result) {
+			if ( result.indexOf("LOG_") == 0 ) {
+				console.log(result);
+			}
+			else if (result.indexOf("SUCCESS 200") == 0 || result.indexOf("SUCCESS 204") == 0) {
+				console.log(result);
+			}
+			else {
+				console.log(result);
+			}
+		},
+		JSON.stringify(options)
+	);
+	
 
 ## Known Issues/ TODO
 

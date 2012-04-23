@@ -16,6 +16,7 @@ package blackberry.polarmobile.childbrowser
     import flash.utils.setTimeout;
 	
 	//photo upload
+	import json.JSON;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	import flash.events.*;
@@ -48,7 +49,7 @@ package blackberry.polarmobile.childbrowser
 		//file upload globals
 		private var sourceFile:String;
 		private var postUrl:String;
-		private var parameters:Object;
+		private var options:Object;
 		private var httpStatus:int;
 
 
@@ -294,14 +295,15 @@ package blackberry.polarmobile.childbrowser
             evalJavaScriptEvent(jsEventHandler, array);
 		}
 		
-		public function uploadFile(mySourceFile:String, myPostUrl:String, myEventHandler:String, myParameters:Object = null) : void {
+		public function uploadFile(mySourceFile:String, myPostUrl:String, myEventHandler:String, myoptions:String = null) : void {
 			trace("Upload File: " + sourceFile);
 			
 			sourceFile = mySourceFile;
 			postUrl = myPostUrl;
 			jsEventHandler = myEventHandler;
-			parameters = myParameters;
 			
+			options = ( myoptions != "" && myoptions != null ) ? (JSON.decode(myoptions) as Object) : (new Object());
+		
 			var loader = new URLLoader(new URLRequest(sourceFile));
 			loader.dataFormat = URLLoaderDataFormat.BINARY; 
 			loader.addEventListener(Event.COMPLETE, loadedCompleteHandler);
@@ -343,7 +345,7 @@ package blackberry.polarmobile.childbrowser
 				urlRequest.url = postUrl;
 				urlRequest.contentType = 'multipart/form-data; boundary=' + getBoundary();
 				urlRequest.method = URLRequestMethod.POST;
-				urlRequest.data = getPostData("a.jpg", e.target.data, "file", parameters);
+				urlRequest.data = getPostData(options.fileName, e.target.data, options.fileKey, options.mimeType, options.params);
 				urlRequest.requestHeaders.push( new URLRequestHeader( 'Cache-Control', 'no-cache' ) );
 			
 				var urlLoader:URLLoader = new URLLoader();
@@ -386,7 +388,7 @@ package blackberry.polarmobile.childbrowser
 		/**
 		 * Create post data to send in a UrlRequest
 		 */
-		public function getPostData(fileName:String, byteArray:ByteArray, uploadDataFieldName:String = "file", parameters:Object = null):ByteArray {
+		public function getPostData(fileName:String, byteArray:ByteArray, uploadDataFieldName:String = "file", mime:String = "application/octet-stream", parameters:Object = null):ByteArray {
 			var i: int;
 			var bytes:String;
 			
@@ -399,55 +401,21 @@ package blackberry.polarmobile.childbrowser
 				parameters = new Object();
 			}
 			
-			if (flash.utils.getQualifiedClassName(parameters) == "String")
-			{
-				//String passed in from PhoneGap
-				var tmpArray:Array = new Array();
-				tmpArray["Filename"] = fileName;
-				
-				var splitArray = String(parameters).split(",");
-				for (var i = 0; i<splitArray.length; i+=2) {
-					tmpArray[splitArray[i]] = splitArray[i+1];
+			//add optional params
+			for(var name:String in parameters) {
+				jsLog("postvar: " + name);
+				postData = BOUNDARY(postData);
+				postData = LINEBREAK(postData);
+				bytes = 'Content-Disposition: form-data; name="' + name + '"';
+				for ( i = 0; i < bytes.length; i++ ) {
+					postData.writeByte( bytes.charCodeAt(i) );
 				}
-				
-				//add parameters to postData
-				for(var name:String in tmpArray) {
-					jsLog("postvar1: " + name);
-					postData = BOUNDARY(postData);
-					postData = LINEBREAK(postData);
-					bytes = 'Content-Disposition: form-data; name="' + name + '"';
-					for ( i = 0; i < bytes.length; i++ ) {
-							postData.writeByte( bytes.charCodeAt(i) );
-					}
-					postData = LINEBREAK(postData);
-					postData = LINEBREAK(postData);
-					postData.writeUTFBytes(tmpArray[name]);
-					postData = LINEBREAK(postData);
-				}
+				postData = LINEBREAK(postData);
+				postData = LINEBREAK(postData);
+				postData.writeUTFBytes(parameters[name]);
+				postData = LINEBREAK(postData);
 			}
-			else
-			{
-				//Regular object
-				parameters.Filename = fileName;
-
-				//add parameters to postData
-				for(var name:String in parameters) {
-					jsLog("postvar2: " + name);
-					postData = BOUNDARY(postData);
-					postData = LINEBREAK(postData);
-					bytes = 'Content-Disposition: form-data; name="' + name + '"';
-					for ( i = 0; i < bytes.length; i++ ) {
-							postData.writeByte( bytes.charCodeAt(i) );
-					}
-					postData = LINEBREAK(postData);
-					postData = LINEBREAK(postData);
-					postData.writeUTFBytes(parameters[name]);
-					postData = LINEBREAK(postData);
-				}
-			}
-			
-
-
+	
 			//add Filedata to postData
 			postData = BOUNDARY(postData);
 			postData = LINEBREAK(postData);
@@ -458,39 +426,33 @@ package blackberry.polarmobile.childbrowser
 			postData.writeUTFBytes(fileName);
 			postData = QUOTATIONMARK(postData);
 			postData = LINEBREAK(postData);
-			
-			//bytes = 'Content-Type: application/octet-stream';
-			bytes = 'Content-Type: image/jpeg';
-			for ( i = 0; i < bytes.length; i++ ) {
-				postData.writeByte( bytes.charCodeAt(i) );
+			for ( i = 0; i < mime.length; i++ ) {
+				postData.writeByte( mime.charCodeAt(i) );
 			}
 			
-			
 			jsLog( String(postData) );
-			
 			
 			postData = LINEBREAK(postData);
 			postData = LINEBREAK(postData);
 			postData.writeBytes(byteArray, 0, byteArray.length);
 			postData = LINEBREAK(postData);
 
-			//add upload filed to postData
-			/*
+			//add form button code
 			postData = LINEBREAK(postData);
 			postData = BOUNDARY(postData);
 			postData = LINEBREAK(postData);
 			bytes = 'Content-Disposition: form-data; name="Upload"';
 			for ( i = 0; i < bytes.length; i++ ) {
-					postData.writeByte( bytes.charCodeAt(i) );
+				postData.writeByte( bytes.charCodeAt(i) );
 			}
 			postData = LINEBREAK(postData);
 			postData = LINEBREAK(postData);
-			bytes = 'Submit Query';
+			bytes = 'Submit';
 			for ( i = 0; i < bytes.length; i++ ) {
-					postData.writeByte( bytes.charCodeAt(i) );
+				postData.writeByte( bytes.charCodeAt(i) );
 			}
 			postData = LINEBREAK(postData);
-			*/
+
 
 			//closing boundary
 			postData = BOUNDARY(postData);
