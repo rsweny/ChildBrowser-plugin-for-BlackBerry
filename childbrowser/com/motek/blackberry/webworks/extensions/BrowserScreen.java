@@ -31,6 +31,9 @@ public class BrowserScreen extends MainScreen
 		BrowserFieldConfig config = new BrowserFieldConfig();
 		config.setProperty(BrowserFieldConfig.NAVIGATION_MODE, BrowserFieldConfig.NAVIGATION_MODE_CARET);
 		
+		String unsabotageUserAgent = "Mozilla/5.0 (Linux; U; Android 2.2; en-us; SCH-I9000 Build/FROYO) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1";
+		config.setProperty(BrowserFieldConfig.USER_AGENT,unsabotageUserAgent);
+		
 		browserfield = new BrowserField(config);
 	   
 		

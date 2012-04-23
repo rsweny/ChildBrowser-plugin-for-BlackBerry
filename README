@@ -29,5 +29,7 @@ function urlCallback(newUrl)
 //Example FilePicker
 webworks.ui.filePicker.open(callBackFnFilePassedIn);
 
-There is also a a similiar child browser for Playbook here:
-https://github.com/aaronstasis/blackberry.polarmobile.childbrowser 
+There is also a similiar child browser and File Upload plugin for Playbook in this subfolder:
+blackberry.polarmobile.childbrowser
+
+
